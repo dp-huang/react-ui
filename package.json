@@ -4,6 +4,7 @@
   "description": "Try react ui",
   "main": "index.js",
   "scripts": {
+    "dev":"webpack-dev-server --inline --content-base . --host 0.0.0.0 ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
