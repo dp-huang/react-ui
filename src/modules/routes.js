@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Redirect, IndexRoute } from 'react-router';
+import App from './App.jsx';
 import Home from './containers/home/Home.jsx';
 import About from './containers/about/About.jsx';
 
@@ -14,7 +15,7 @@ export default function getRoutes(store) {
 
 	return (
 		<Route>
-			<Route path="/" component={Home}>
+			<Route path="/" component={App}>
 				<IndexRoute component={Home}/>
 				<Route path="home" component={Home}/>
 				<Route path="about" component={About}/>
