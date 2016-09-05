@@ -1,44 +1,83 @@
+'use strict';
+
 var path = require('path');
 var webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var autoprefixer = require('autoprefixer');
 
 module.exports = {
-  entry: {
-    app: path.resolve(__dirname, 'src/app.jsx'),
-    vendors: ['webpack-dev-server/client?http://localhost:3005', 'webpack/hot/only-dev-server']
-  },
-  debug: true,
-  devtool: 'eval-source-map',
-  output: { 
-    path: path.join(__dirname, 'dist'), 
-    publicPath: '/dist/',
-    filename: 'bundle.js' 
-  },
-  serverConfig: {
-    port: '3005',// server port
-    publicPath: '/dist/',// js path
-    contentBase: './'//web root path
-  },
-  module: {
-    loaders: [
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
+    devtool: 'eval-source-map',
+    entry: [
+        'webpack-dev-server/client?http://localhost:3005',
+        'webpack/hot/only-dev-server',
+        'react-hot-loader/patch',
+        path.join(__dirname, 'src/modules/index.jsx')
+    ],
+    output: {
+        path: path.join(__dirname, '/dist/'),
+        filename: '[name].js',
+        publicPath: '/'
+    },
+    resolve: {
+        extensions: ['', '.js', '.jsx',".css",".less"]
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+          template: 'src/modules/index.tpl.html',
+          inject: 'body',
+          filename: 'index.html'
+        }),
+        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoErrorsPlugin(),
+        new webpack.DefinePlugin({
+          'process.env.NODE_ENV': JSON.stringify('development')
+        })
+    ],
+    //eslint: {
+        //configFile: '.eslintrc',
+        //failOnWarning: false,
+        //failOnError: false
+    //},
+    postcss: [autoprefixer],
+    module: {
+        //preLoaders: [
+        //    {
+        //        test: /\.js$/,
+        //        exclude: /node_modules/,
+        //        loader: 'eslint'
+        //    }
+        //],
         loaders: [
-          'react-hot',
-          'babel?{presets:["es2015","stage-0","react"]}'
+            {
+                test: /\.js[x]?$/,
+                include: [
+                    path.join(__dirname, '/src/'),
+                    path.join(__dirname, '/node_modules/react-icons/'),
+                ],
+                loader: 'babel'
+            },
+            {
+                test: /\.less$/,
+                loader: 'style!css!postcss!less'
+            },
+            {
+                test: /\.css/,
+                loader:'style!css!postcss'                
+            },
+            {
+                test: /\.(png|jpg|svg|gif)$/,
+                loader: 'url?limit=25000&name=img/[hash:8].[name].[ext]'
+            },
+            {
+                test: /\.json?$/,
+                loader: 'json'
+            },
+            {test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
+            {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
+            {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file'},
+            {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'}
+
         ]
-      }, 
-      {
-        test: /\.css$/, loader: 'style-loader!css-loader'
-      }
-    ]
-  },
-  externals: {
-    'Config': {'host': 'http://localhost:8080'}
-  },
-  plugins: [
-    new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js'),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
-  ]
+    }
 };
