@@ -13,12 +13,20 @@ class Home extends Component {
 
 	onCreate() {
 		const content = this.refs.createInput.value;
-		this.props.dispatch(actions.create(this.props.homeProps.values || [], content));
-		this.refs.createInput.value = '';
+		if (content) {
+			this.props.dispatch(actions.create(this.props.homeProps.values, content));
+			this.refs.createInput.value = '';
+		}
 	}
 
 	onDelete(id) {
-		this.props.dispatch(actions.deleteItem(this.props.homeProps.values || [], id));
+		this.props.dispatch(actions.deleteItem(this.props.homeProps.values, id));
+	}
+
+	onKeyPress(event) {
+		if (event.charCode === 13) {
+			this.onCreate();
+		}
 	}
 
 	render() {
@@ -42,7 +50,7 @@ class Home extends Component {
 						{rows}
 					</div>
 					<div className='createDiv'>
-						<input ref='createInput' className='form-control createInput' /> <Button className='createBtn' onClick={this.onCreate.bind(this)}>Create</Button>
+						<input ref='createInput' className='form-control createInput' onKeyPress={this.onKeyPress.bind(this)}/> <Button className='createBtn' onClick={this.onCreate.bind(this)}>Create</Button>
 					</div>
 				</Panel>
 			</div>
