@@ -8,7 +8,6 @@ var StatsPlugin = require('stats-webpack-plugin');
 let extractCss = new ExtractTextPlugin('css/[name]-[hash:8].min.css');
 
 module.exports = {
-    devtool: 'eval-source-map',
     entry:{
         vendor: ['react', 'classnames', 'react-router', 'react-dom', 'react-redux', 'redux'],
         app:path.join(__dirname, 'src/modules/index.jsx')
